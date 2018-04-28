@@ -1,0 +1,57 @@
+---
+- name: jack build deps
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - build-essential
+    - libsamplerate-dev
+    - libasound-dev
+    - libsndfile-dev
+    - libeigen3-dev
+    - libcelt-dev
+    - libopus-dev
+    - libreadline-dev
+    - git
+
+- name: src dir
+  file:
+    path: /usr/local/src
+    state: directory
+
+- name: clone jackd
+  git:
+    repo: git://github.com/jackaudio/jack2.git
+    dest: /usr/local/src/jack2
+    clone: yes
+    version: v1.9.12
+
+- name: configure jackd
+  shell: ./waf configure --prefix=/usr/local/ --libdir=/usr/lib/
+  args:
+    chdir: /usr/local/src/jack2
+
+- name: build jackd
+  shell: ./waf
+  args:
+    chdir: /usr/local/src/jack2
+
+- name: install jackd
+  shell: ./waf install
+  args:
+    chdir: /usr/local/src/jack2
+
+- name: kernel audio priority
+  copy:
+    src: audio.conf
+    dest: /etc/security/limits.d/
+
+- name: set pi gpu mem to 16
+  lineinfile:
+    path: /boot/config.txt
+    regexp: 'gpu_mem.*'
+    line: 'gpu_mem=16'
+    owner: root
+    group: root
+    mode: 0755
+
