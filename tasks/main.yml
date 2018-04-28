@@ -30,16 +30,19 @@
   shell: ./waf configure --prefix=/usr/local/ --libdir=/usr/lib/
   args:
     chdir: /usr/local/src/jack2
+    creates: /usr/local/src/jack2/build/config.h
 
 - name: build jackd
   shell: ./waf
   args:
     chdir: /usr/local/src/jack2
+    creates: /usr/local/src/jack2/build/jackd
 
 - name: install jackd
   shell: ./waf install
   args:
     chdir: /usr/local/src/jack2
+    creates: /usr/local/bin/jackd
 
 - name: kernel audio priority
   copy:
