@@ -9,7 +9,6 @@
     - libasound-dev
     - libsndfile-dev
     - libeigen3-dev
-    - libcelt-dev
     - libopus-dev
     - libreadline-dev
     - git
@@ -57,4 +56,4 @@
     owner: root
     group: root
     mode: 0755
-
+  when: raspberrypi
