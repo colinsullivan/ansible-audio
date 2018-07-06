@@ -47,6 +47,10 @@
   copy:
     src: audio.conf
     dest: /etc/security/limits.d/
+  register: limitsconf
+
+# to not interfere with other parts of a raspberry pi config, we adjust the 
+# /boot/config.txt using `lineinfile` instead of templating the whole thing.
 
 - name: set pi gpu mem to 16
   lineinfile:
@@ -57,3 +61,30 @@
     group: root
     mode: 0755
   when: raspberrypi
+  register: bootconf1
+
+- name: enable fe-pi audio card for raspberry pi
+  lineinfile:
+    path: /boot/config.txt
+    regexp: '^dtoverlay=.*'
+    line: 'dtoverlay=fe-pi-audio'
+    owner: root
+    group: root
+    mode: 0755
+  when: raspberrypi_fepi
+  register: bootconf2
+
+- name: disable onboard raspberry pi audio
+  lineinfile:
+    path: /boot/config.txt
+    regexp: '^dtparam=.*'
+    line: 'dtparam=audio=off'
+    owner: root
+    group: root
+    mode: 0755
+  when: raspberrypi_disable_onboard_audio
+  register: bootconf3
+
+- name: rebooting
+  include_tasks: reboot_and_wait.yml
+  when: limitsconf.changed or bootconf1.changed or bootconf2.changed or bootconf3.changed

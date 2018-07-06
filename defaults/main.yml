@@ -1,2 +1,4 @@
 ---
 raspberrypi: false
+raspberrypi_fepi: false
+raspberrypi_disable_onboard_audio: true
