@@ -1,2 +1,6 @@
 ---
 # vars file for audio
+audio_raspberrypi: false
+audio_raspberrypi_fepi: false
+audio_raspberrypi_disable_onboard_audio: false
+audio_raspberrypi_gpu_mem_mb: 16

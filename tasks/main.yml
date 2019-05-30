@@ -1,17 +1,9 @@
 ---
 - name: jack build deps
   apt:
-    name: "{{ item }}"
+    name: ['build-essential', 'libsamplerate-dev', 'libasound-dev',
+    'libsndfile-dev', 'libeigen3-dev', 'libopus-dev', 'libreadline-dev', 'git']
     state: present
-  with_items:
-    - build-essential
-    - libsamplerate-dev
-    - libasound-dev
-    - libsndfile-dev
-    - libeigen3-dev
-    - libopus-dev
-    - libreadline-dev
-    - git
 
 - name: src dir
   file:
@@ -52,15 +44,15 @@
 # to not interfere with other parts of a raspberry pi config, we adjust the 
 # /boot/config.txt using `lineinfile` instead of templating the whole thing.
 
-- name: set pi gpu mem to 16
+- name: set pi gpu mem
   lineinfile:
     path: /boot/config.txt
-    regexp: 'gpu_mem.*'
-    line: 'gpu_mem=16'
+    regexp: "gpu_mem={{ audio_raspberrypi_gpu_mem_mb }}"
+    line: "gpu_mem={{ audio_raspberrypi_gpu_mem_mb }}"
     owner: root
     group: root
     mode: 0755
-  when: raspberrypi
+  when: audio_raspberrypi
   register: bootconf1
 
 - name: enable fe-pi audio card for raspberry pi
@@ -71,7 +63,7 @@
     owner: root
     group: root
     mode: 0755
-  when: raspberrypi_fepi
+  when: audio_raspberrypi_fepi
   register: bootconf2
 
 - name: disable onboard raspberry pi audio
@@ -82,7 +74,7 @@
     owner: root
     group: root
     mode: 0755
-  when: raspberrypi_disable_onboard_audio
+  when: audio_raspberrypi_disable_onboard_audio
   register: bootconf3
 
 - name: rebooting
