@@ -1,4 +1,7 @@
 ---
-raspberrypi: false
-raspberrypi_fepi: false
-raspberrypi_disable_onboard_audio: true
+audio_raspberrypi: false
+audio_raspberrypi_fepi: false
+audio_raspberrypi_disable_onboard_audio: true
+audio_raspberrypi_gpu_mem_mb: 16
+audio_build_jackd: false
+audio_jackd_version: jackd2

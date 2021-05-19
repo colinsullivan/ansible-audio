@@ -1,0 +1,5 @@
+---
+- name: Install jackd package
+  apt:
+    pkg:
+      - "{{ audio_jackd_version }}"

@@ -1,39 +1,11 @@
 ---
-- name: jack build deps
-  apt:
-    name: ['build-essential', 'libsamplerate-dev', 'libasound-dev',
-    'libsndfile-dev', 'libeigen3-dev', 'libopus-dev', 'libreadline-dev', 'git']
-    state: present
+- name: Build jackd
+  include_tasks: build_jackd.yml
+  when: audio_build_jackd == True
 
-- name: src dir
-  file:
-    path: /usr/local/src
-    state: directory
-
-- name: clone jackd
-  git:
-    repo: git://github.com/jackaudio/jack2.git
-    dest: /usr/local/src/jack2
-    clone: yes
-    version: v1.9.12
-
-- name: configure jackd
-  shell: ./waf configure --prefix=/usr/local/ --libdir=/usr/lib/
-  args:
-    chdir: /usr/local/src/jack2
-    creates: /usr/local/src/jack2/build/config.h
-
-- name: build jackd
-  shell: ./waf
-  args:
-    chdir: /usr/local/src/jack2
-    creates: /usr/local/src/jack2/build/jackd
-
-- name: install jackd
-  shell: ./waf install
-  args:
-    chdir: /usr/local/src/jack2
-    creates: /usr/local/bin/jackd
+- name: Install jackd from packages
+  include_tasks: install_jackd.yml
+  when: audio_build_jackd == False
 
 - name: kernel audio priority
   copy:
